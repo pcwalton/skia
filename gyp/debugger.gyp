@@ -35,19 +35,25 @@
       [ 'skia_os == "mac"', {
         # Use the systemwide Qt libs by default
         'variables': {
-          'qt_sdk%': '/Library/Frameworks',
+          'qt_sdk%': '/Users/pcwalton/Library/Frameworks',
         },
         'qt_sdk': '<(qt_sdk)',
         'qt_moc%': 'moc',
         'qt_includes': [
-          '<(qt_sdk)/QtCore.framework/Headers/',
-          '<(qt_sdk)/QtGui.framework/Headers/',
-          '<(qt_sdk)/QtOpenGL.framework/Headers/',
+          '<(qt_sdk)/QtCore.framework/Headers',
+          '<(qt_sdk)/QtGui.framework/Headers',
+          '<(qt_sdk)/QtOpenGL.framework/Headers',
+          '<(qt_sdk)/QtWidgets.framework/Headers',
+          '<(qt_sdk)/QtCore.framework',
+          '<(qt_sdk)/QtGui.framework',
+          '<(qt_sdk)/QtOpenGL.framework',
+          '<(qt_sdk)/QtWidgets.framework',
         ],
         'qt_libs': [
           '<(qt_sdk)/QtCore.framework',
           '<(qt_sdk)/QtGui.framework',
           '<(qt_sdk)/QtOpenGL.framework',
+          '<(qt_sdk)/QtWidgets.framework',
         ],
       }],
       [ 'skia_os == "win"', {
@@ -79,7 +85,7 @@
       'type': 'executable',
       'mac_bundle': 1,
       'mac_framework_dirs': [
-        '/Library/Frameworks',
+        '/Users/pcwalton/Library/Frameworks',
       ],
       'include_dirs' : [
         '../src/core',

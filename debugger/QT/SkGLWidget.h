@@ -34,6 +34,7 @@ public:
         this->updateGL();
     }
     void setSampleCount(int sampleCount);
+    void benchmarkGL();
 
 signals:
     void drawComplete();
@@ -42,7 +43,6 @@ protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-
 
 private:
     void createRenderTarget();

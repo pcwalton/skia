@@ -21,21 +21,21 @@
 #include "SkSettingsWidget.h"
 #include <QtCore/QSignalMapper>
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QListView>
-#include <QtGui/QListWidget>
-#include <QtGui/QMainWindow>
-#include <QtGui/QSplitter>
-#include <QtGui/QStatusBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include <vector>
 
 class SkTimedPicture;
@@ -76,6 +76,11 @@ private slots:
         Toggles breakpoint view in the list widget.
      */
     void actionBreakpoints();
+
+    /**
+        Runs a simple benchmark.
+     */
+    void actionBenchmark();
 
     /**
         Profile the commands
@@ -237,6 +242,7 @@ private:
     QToolBar fToolBar;
 
     QAction fActionOpen;
+    QAction fActionBenchmark;
     QAction fActionBreakpoint;
     QAction fActionProfile;
     QAction fActionCancel;
@@ -298,6 +304,7 @@ private:
     QMenu fMenuEdit;
     QMenu fMenuNavigate;
     QMenu fMenuView;
+    QMenu fMenuBenchmark;
     QMenu fMenuWindows;
 
     bool fLoading;

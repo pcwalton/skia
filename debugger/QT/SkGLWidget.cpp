@@ -8,6 +8,13 @@
 
 
 #include "SkGLWidget.h"
+#include <QtGui>
+#include <QtOpenGL>
+#include <QtWidgets>
+#include <sys/time.h>
+
+#define BENCHMARK_RUNS  64
+#define BENCHMARK_WARMUPS  512
 
 #if SK_SUPPORT_GPU
 
@@ -81,6 +88,40 @@ void SkGLWidget::paintGL() {
         fCanvas->flush();
         emit drawComplete();
     }
+}
+
+void SkGLWidget::benchmarkGL() {
+    if (this->isHidden() || !fCanvas)
+        return;
+
+    for (int i = 0; i < BENCHMARK_WARMUPS; i++) {
+        fCurContext->resetContext();
+        fDebugger->draw(fCanvas.get());
+        fCanvas->flush();
+        glFinish();
+    }
+
+    struct timeval start;
+    gettimeofday(&start, NULL);
+    for (int i = 0; i < BENCHMARK_RUNS; i++) {
+        fCurContext->resetContext();
+        fDebugger->draw(fCanvas.get());
+    }
+    fCanvas->flush();
+    glFinish();
+    struct timeval end;
+    gettimeofday(&end, NULL);
+
+    char *message;
+    asprintf(&message,
+             "%d runs completed in %fms",
+             BENCHMARK_RUNS,
+             (double)(end.tv_usec - start.tv_usec) / 1000.0 +
+             (double)(end.tv_sec - start.tv_sec) * 1000.0);
+    QMessageBox::information(this, "Time", message);
+    free(message);
+
+    emit drawComplete();
 }
 
 GrBackendRenderTargetDesc SkGLWidget::getDesc(int w, int h) {

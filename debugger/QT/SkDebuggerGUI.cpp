@@ -12,6 +12,7 @@
 #include "SkPictureRecord.h"
 #include <QListWidgetItem>
 #include <QtGui>
+#include <QtWidgets>
 #include "sk_tool_utils.h"
 
 #if defined(SK_BUILD_FOR_WIN32)
@@ -32,6 +33,7 @@ SkDebuggerGUI::SkDebuggerGUI(QWidget *parent) :
     , fToolBar(this)
     , fActionOpen(this)
     , fActionBreakpoint(this)
+    , fActionBenchmark(this)
     , fActionProfile(this)
     , fActionCancel(this)
     , fActionClearBreakpoints(this)
@@ -62,6 +64,7 @@ SkDebuggerGUI::SkDebuggerGUI(QWidget *parent) :
     , fMenuFile(this)
     , fMenuNavigate(this)
     , fMenuView(this)
+    , fMenuBenchmark(this)
     , fLoading(false)
 {
     setupUi(this);
@@ -81,6 +84,7 @@ SkDebuggerGUI::SkDebuggerGUI(QWidget *parent) :
     connect(&fActionInspector, SIGNAL(triggered()), this, SLOT(actionInspector()));
     connect(&fActionSettings, SIGNAL(triggered()), this, SLOT(actionSettings()));
     connect(&fFilter, SIGNAL(activated(QString)), this, SLOT(toggleFilter(QString)));
+    connect(&fActionBenchmark, SIGNAL(triggered()), this, SLOT(actionBenchmark()));
     connect(&fActionProfile, SIGNAL(triggered()), this, SLOT(actionProfile()));
     connect(&fActionCancel, SIGNAL(triggered()), this, SLOT(actionCancel()));
     connect(&fActionClearBreakpoints, SIGNAL(triggered()), this, SLOT(actionClearBreakpoints()));
@@ -160,6 +164,10 @@ void SkDebuggerGUI::run(const SkPicture* pict,
     renderer->resetState(true);    // flush, swapBuffers and Finish
 
     renderer->end();
+}
+
+void SkDebuggerGUI::actionBenchmark() {
+    fCanvasWidget.benchmarkGL();
 }
 
 void SkDebuggerGUI::actionProfile() {
@@ -294,9 +302,9 @@ void SkDebuggerGUI::actionRewind() {
 }
 
 void SkDebuggerGUI::actionSave() {
-    fFileName = fPath.toAscii().data();
+    fFileName = fPath.toLatin1().data();
     fFileName.append("/");
-    fFileName.append(fDirectoryWidget.currentItem()->text().toAscii().data());
+    fFileName.append(fDirectoryWidget.currentItem()->text().toLatin1().data());
     saveToFile(fFileName);
 }
 
@@ -306,7 +314,7 @@ void SkDebuggerGUI::actionSaveAs() {
     if (!filename.endsWith(".skp", Qt::CaseInsensitive)) {
         filename.append(".skp");
     }
-    saveToFile(SkString(filename.toAscii().data()));
+    saveToFile(SkString(filename.toLatin1().data()));
 }
 
 void SkDebuggerGUI::actionScale(float scaleFactor) {
@@ -356,12 +364,12 @@ void SkDebuggerGUI::saveToFile(const SkString& filename) {
 
 void SkDebuggerGUI::loadFile(QListWidgetItem *item) {
     if (fDirectoryWidgetActive) {
-        fFileName = fPath.toAscii().data();
+        fFileName = fPath.toLatin1().data();
         // don't add a '/' to files in the local directory
         if (fFileName.size() > 0) {
             fFileName.append("/");
         }
-        fFileName.append(item->text().toAscii().data());
+        fFileName.append(item->text().toLatin1().data());
         loadPicture(fFileName);
     }
 }
@@ -376,7 +384,7 @@ void SkDebuggerGUI::openFile(const QString &filename) {
     fDirectoryWidgetActive = false;
     if (!filename.isEmpty()) {
         QFileInfo pathInfo(filename);
-        loadPicture(SkString(filename.toAscii().data()));
+        loadPicture(SkString(filename.toLatin1().data()));
         setupDirectoryWidget(pathInfo.path());
     }
     fDirectoryWidgetActive = true;
@@ -517,6 +525,8 @@ void SkDebuggerGUI::setupUi(QMainWindow *SkDebuggerGUI) {
     fActionSettings.setShortcut(QKeySequence(tr("Ctrl+G")));
     fActionSettings.setIcon(settings);
     fActionSettings.setText("Settings");
+
+    fActionBenchmark.setText("Run OpenGL Benchmark");
 
     QIcon play;
     play.addFile(QString::fromUtf8(":/play.png"), QSize(),
@@ -693,6 +703,9 @@ void SkDebuggerGUI::setupUi(QMainWindow *SkDebuggerGUI) {
     fMenuView.addAction(&fActionZoomIn);
     fMenuView.addAction(&fActionZoomOut);
 
+    fMenuBenchmark.setTitle("Benchmark");
+    fMenuBenchmark.addAction(&fActionBenchmark);
+
     fMenuWindows.setTitle("Window");
     fMenuWindows.addAction(&fActionInspector);
     fMenuWindows.addAction(&fActionSettings);
@@ -704,6 +717,7 @@ void SkDebuggerGUI::setupUi(QMainWindow *SkDebuggerGUI) {
     fMenuBar.addAction(fMenuEdit.menuAction());
     fMenuBar.addAction(fMenuView.menuAction());
     fMenuBar.addAction(fMenuNavigate.menuAction());
+    fMenuBar.addAction(fMenuBenchmark.menuAction());
     fMenuBar.addAction(fMenuWindows.menuAction());
 
     SkDebuggerGUI->setMenuBar(&fMenuBar);

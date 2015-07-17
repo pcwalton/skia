@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
     QStringList::const_iterator iter = argList.begin();
 
-    SkString commandName(iter->toAscii().data());
+    SkString commandName(iter->toLatin1().data());
     ++iter; // skip the command name
 
     for ( ; iter != argList.end(); ++iter) {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
             usage(commandName.c_str());
             return -1;
         } else if (input.isEmpty()) {
-            input = SkString(iter->toAscii().data());
+            input = SkString(iter->toLatin1().data());
         } else {
             usage(commandName.c_str());
             return -1;

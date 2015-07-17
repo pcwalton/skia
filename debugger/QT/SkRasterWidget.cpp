@@ -33,9 +33,9 @@ void SkRasterWidget::resizeEvent(QResizeEvent* event) {
 void SkRasterWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QStyleOption opt;
-    opt.init(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+    /*QStyleOption opt;
+    opt.init(this);*/
+    //style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     if (!fSurface) {
         return;

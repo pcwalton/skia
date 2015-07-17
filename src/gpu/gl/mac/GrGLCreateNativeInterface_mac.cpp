@@ -15,9 +15,12 @@
 class GLLoader {
 public:
     GLLoader() {
-        fLibrary = dlopen(
-                    "/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                    RTLD_LAZY);
+        const char *libraryPath = getenv("SKIA_LIBRARY_PATH");
+        if (libraryPath == NULL) {
+            libraryPath =
+                "/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib";
+        }
+        fLibrary = dlopen(libraryPath, RTLD_LAZY);
     }
 
     ~GLLoader() {

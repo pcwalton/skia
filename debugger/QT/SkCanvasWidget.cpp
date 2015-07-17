@@ -143,3 +143,8 @@ void SkCanvasWidget::zoom(float scale, int px, int py) {
     fDebugger->setUserMatrix(fUserMatrix);
     drawTo(fDebugger->index());
 }
+
+void SkCanvasWidget::benchmarkGL() {
+    fGLWidget.benchmarkGL();
+}
+

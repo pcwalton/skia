@@ -45,6 +45,8 @@ public:
 
     void resetWidgetTransform();
 
+    void benchmarkGL();
+
     enum ZoomCommandTypes {
         kIn_ZoomCommand,
         kOut_ZoomCommand,
